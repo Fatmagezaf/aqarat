@@ -20,7 +20,7 @@ import { UserRole } from '@/types/user';
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { userProfile, logout, isAdmin, switchDemoRole, isDemoMode } = useAuth();
+  const { userProfile, logout, isAdmin } = useAuth();
 
   const navItems = [
     {
@@ -176,43 +176,6 @@ export default function Sidebar() {
           </span>
         </div>
 
-        {/* Role Quick Switcher for Testing / Evaluation */}
-        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '10px' }}>
-          <div
-            style={{
-              fontSize: '0.725rem',
-              color: 'var(--text-muted)',
-              marginBottom: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-            }}
-          >
-            <SlidersHorizontal size={12} />
-            تبديل الصلاحية للتجربة:
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
-            {(['admin', 'agent', 'viewer'] as UserRole[]).map((r) => (
-              <button
-                key={r}
-                onClick={() => switchDemoRole(r)}
-                style={{
-                  padding: '4px 2px',
-                  fontSize: '0.725rem',
-                  fontWeight: 600,
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid',
-                  borderColor: currentRole === r ? 'var(--primary)' : 'var(--border-subtle)',
-                  background: currentRole === r ? 'var(--primary-subtle)' : 'transparent',
-                  color: currentRole === r ? '#60A5FA' : 'var(--text-muted)',
-                  cursor: 'pointer',
-                }}
-              >
-                {r === 'admin' ? 'مدير' : r === 'agent' ? 'وكيل' : 'مشاهد'}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Logout Button */}
         <button

@@ -8,7 +8,7 @@ import { isFirebaseConfigured } from '@/lib/firebase/config';
 
 export default function Navbar() {
   const router = useRouter();
-  const { canEdit, isDemoMode } = useAuth();
+  const { canEdit } = useAuth();
   const [quickSearch, setQuickSearch] = useState('');
 
   const handleSearchSubmit = (e: React.FormEvent) => {

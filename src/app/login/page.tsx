@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Building2, Lock, Mail, AlertCircle, ArrowLeft, ShieldCheck, UserCheck, Eye, Loader2 } from 'lucide-react';
-import { UserRole } from '@/types/user';
+import { Building2, Lock, Mail, AlertCircle, ArrowLeft, Loader2, User } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, switchDemoRole } = useAuth();
+  const { login, register } = useAuth();
 
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -18,32 +19,40 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email || !password) {
-      setError('يرجى إدخال البريد الإلكتروني وكلمة المرور');
+    if (!email || !password || (isSignUp && !name)) {
+      setError('يرجى ملء جميع الحقول المطلوبة');
       return;
     }
 
     setLoading(true);
     try {
-      await login(email, password);
+      if (isSignUp) {
+        await register(email, password, name);
+      } else {
+        await login(email, password);
+      }
       router.push('/');
     } catch (err: any) {
-      console.error('Login error:', err);
+      console.error('Auth error:', err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
         setError('بيانات الدخول غير صحيحة. يرجى التحقق من البريد وكلمة المرور.');
       } else if (err.code === 'auth/user-not-found') {
         setError('لا يوجد حساب مسجل بهذا البريد الإلكتروني.');
+      } else if (err.code === 'auth/email-already-in-use') {
+        setError('البريد الإلكتروني مستخدم بالفعل.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('كلمة المرور ضعيفة جداً. يجب أن تكون 6 أحرف على الأقل.');
       } else {
-        setError(err.message || 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+        setError(err.message || 'حدث خطأ. يرجى المحاولة مرة أخرى.');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDemoLogin = (role: UserRole) => {
-    switchDemoRole(role);
-    router.push('/');
+  const toggleMode = () => {
+    setIsSignUp(!isSignUp);
+    setError(null);
   };
 
   return (
@@ -108,7 +117,7 @@ export default function LoginPage() {
             نظام إدارة العقارات الداخلي
           </h1>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-            قاعدة بيانات خاصة بالعقارات للمستخدمين المصرح لهم فقط
+            {isSignUp ? 'إنشاء حساب جديد في النظام' : 'قاعدة بيانات خاصة بالعقارات للمستخدمين المصرح لهم فقط'}
           </p>
         </div>
 
@@ -133,8 +142,25 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* Login Form */}
+        {/* Auth Form */}
         <form onSubmit={handleSubmit}>
+          {isSignUp && (
+            <div className="form-group">
+              <label className="form-label">
+                <User size={16} />
+                الاسم الكامل
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="form-input"
+                placeholder="الاسم الكامل"
+                required
+              />
+            </div>
+          )}
+
           <div className="form-group">
             <label className="form-label">
               <Mail size={16} />
@@ -180,58 +206,29 @@ export default function LoginPage() {
               </>
             ) : (
               <>
-                تسجيل الدخول
+                {isSignUp ? 'إنشاء الحساب' : 'تسجيل الدخول'}
                 <ArrowLeft size={18} />
               </>
             )}
           </button>
         </form>
 
-        {/* Quick Demo Access Buttons */}
-        <div style={{ marginTop: '28px', borderTop: '1px solid var(--border-subtle)', paddingTop: '20px' }}>
-          <div
+        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={toggleMode}
             style={{
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              textAlign: 'center',
-              marginBottom: '12px',
-              fontWeight: 600,
+              background: 'none',
+              border: 'none',
+              color: 'var(--primary)',
+              fontSize: '0.875rem',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              padding: '8px',
             }}
           >
-            أو تسجيل الدخول السريع (للتجربة والتقييم الفوري):
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('admin')}
-              className="btn btn-secondary btn-sm"
-              style={{ justifyContent: 'flex-start' }}
-            >
-              <ShieldCheck size={16} color="#EF4444" />
-              <span>دخول كـ <strong>مدير النظام (Admin)</strong> - صلاحيات كاملة</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('agent')}
-              className="btn btn-secondary btn-sm"
-              style={{ justifyContent: 'flex-start' }}
-            >
-              <UserCheck size={16} color="#3B82F6" />
-              <span>دخول كـ <strong>مسؤول مبيعات (Agent)</strong> - إضافة وتعديل</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('viewer')}
-              className="btn btn-secondary btn-sm"
-              style={{ justifyContent: 'flex-start' }}
-            >
-              <Eye size={16} color="#9CA3AF" />
-              <span>دخول كـ <strong>مشاهد (Viewer)</strong> - استعراض فقط</span>
-            </button>
-          </div>
+            {isSignUp ? 'لديك حساب بالفعل؟ قم بتسجيل الدخول' : 'ليس لديك حساب؟ قم بإنشاء حساب جديد'}
+          </button>
         </div>
       </div>
     </div>

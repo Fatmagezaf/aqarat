@@ -4,36 +4,6 @@ import { UserProfile, UserRole } from '@/types/user';
 
 const USERS_COLLECTION = 'users';
 
-export const DEFAULT_DEMO_USERS: UserProfile[] = [
-  {
-    uid: 'demo-admin-fatma',
-    email: 'admin@estatecrm.com',
-    displayName: 'فاطمة - مدير النظام',
-    role: 'admin',
-    phone: '01011223344',
-    isActive: true,
-    createdAt: new Date('2025-01-01'),
-  },
-  {
-    uid: 'demo-agent-passant',
-    email: 'agent@estatecrm.com',
-    displayName: 'بسنت - مسؤول المبيعات',
-    role: 'agent',
-    phone: '01055667788',
-    isActive: true,
-    createdAt: new Date('2025-02-01'),
-  },
-  {
-    uid: 'demo-viewer-guest',
-    email: 'viewer@estatecrm.com',
-    displayName: 'مستعرض - ضيف',
-    role: 'viewer',
-    phone: '01099887766',
-    isActive: true,
-    createdAt: new Date('2025-03-01'),
-  },
-];
-
 export async function getUserProfile(uid: string): Promise<UserProfile | null> {
   if (isFirebaseConfigured && db) {
     try {
@@ -46,9 +16,7 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
     }
   }
 
-  // Fallback to demo users
-  const found = DEFAULT_DEMO_USERS.find((u) => u.uid === uid);
-  return found || null;
+  return null;
 }
 
 export async function createOrUpdateUserProfile(profile: UserProfile): Promise<void> {
@@ -75,5 +43,5 @@ export async function getAllUsers(): Promise<UserProfile[]> {
     }
   }
 
-  return DEFAULT_DEMO_USERS;
+  return [];
 }
