@@ -11,7 +11,7 @@ import {
 } from 'firebase/auth';
 import { auth, isFirebaseConfigured } from '@/lib/firebase/config';
 import { UserProfile, UserRole } from '@/types/user';
-import { getUserProfile, createOrUpdateUserProfile } from '@/services/userService';
+import { getUserProfile, createOrUpdateUserProfile, getAllUsers } from '@/services/userService';
 
 interface AuthContextType {
   user: FirebaseUser | null;
@@ -99,11 +99,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
         await updateProfile(cred.user, { displayName: name });
         
+        // Check if this is the first user
+        const allUsers = await getAllUsers();
+        const isFirstUser = allUsers.length === 0;
+
         const newProfile: UserProfile = {
           uid: cred.user.uid,
           email: cred.user.email || email,
           displayName: name,
-          role: 'viewer', // Default role
+          role: isFirstUser ? 'admin' : 'viewer',
           isActive: true,
           createdAt: new Date(),
         };

@@ -14,6 +14,7 @@ import {
   UserCheck,
   Eye,
   SlidersHorizontal,
+  ClipboardList,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { UserRole } from '@/types/user';
@@ -42,6 +43,11 @@ export default function Sidebar() {
       title: 'خريطة العقارات',
       href: '/map',
       icon: <MapPin size={20} />,
+    },
+    {
+      title: 'طلبات العملاء',
+      href: '/client-requests',
+      icon: <ClipboardList size={20} />,
     },
   ];
 

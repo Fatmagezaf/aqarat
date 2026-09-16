@@ -154,6 +154,21 @@ export default function PropertyForm({ initialData, isEdit = false }: PropertyFo
     }
   }, [watchedPrice, watchedArea, setValue]);
 
+  // Auto-generate unique property code if adding new
+  useEffect(() => {
+    if (!isEdit && !initialData?.code) {
+      const displayName = userProfile?.displayName || user?.email || 'USR';
+      // Get first 3 letters, removing spaces and making uppercase
+      const prefix = displayName.replace(/\s+/g, '').substring(0, 3).toUpperCase();
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let randomPart = '';
+      for (let i = 0; i < 5; i++) {
+        randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      setValue('code', `${prefix}-${randomPart}`);
+    }
+  }, [isEdit, initialData, setValue, userProfile, user]);
+
   const handleMapLocationChange = (lat: number, lng: number, addr?: string, url?: string) => {
     setValue('latitude', lat);
     setValue('longitude', lng);
@@ -305,8 +320,10 @@ export default function PropertyForm({ initialData, isEdit = false }: PropertyFo
                 type="text"
                 {...register('code')}
                 className="form-input"
-                placeholder="مثال: FAT-1135"
+                placeholder="يتم توليده تلقائياً"
                 dir="ltr"
+                readOnly
+                style={{ backgroundColor: 'var(--bg-surface-elevated)', cursor: 'not-allowed', opacity: 0.8 }}
               />
               {errors.code && <span className="form-error">{errors.code.message}</span>}
             </div>
