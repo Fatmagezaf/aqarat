@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, MapPin, Maximize2, Bed, Bath, ArrowUpRight, ExternalLink } from 'lucide-react';
+import { Sparkles, MapPin, Maximize2, Bed, Bath, ArrowUpRight, ExternalLink, MessageCircle } from 'lucide-react';
 import { Property } from '@/types/property';
 import { formatCurrency, formatArea, PURPOSE_LABELS, STATUS_LABELS } from '@/lib/utils/formatters';
 
@@ -142,15 +142,39 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       </div>
 
       {/* Card Footer Actions */}
-      <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
+      <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', flexWrap: 'wrap' }}>
         <Link
           href={`/properties/${property.id}`}
           className="btn btn-primary btn-sm"
-          style={{ flex: 1, textAlign: 'center' }}
+          style={{ flex: 1, textAlign: 'center', minWidth: '45%' }}
         >
-          عرض العقار
+          عرض التفاصيل
           <ArrowUpRight size={14} />
         </Link>
+
+        <a
+          href={`https://wa.me/201122405205?text=${encodeURIComponent(`مرحباً، مهتم بالعقار كود (${property.code})، هل هو متاح؟`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-sm"
+          style={{
+            flex: 1,
+            textAlign: 'center',
+            backgroundColor: '#25D366',
+            color: 'white',
+            borderColor: '#25D366',
+            minWidth: '45%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            fontWeight: 600,
+          }}
+          title="تواصل عبر الواتساب"
+        >
+          <MessageCircle size={16} />
+          تواصل
+        </a>
 
         {property.locationUrl && (
           <a

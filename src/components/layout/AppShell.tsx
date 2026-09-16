@@ -11,11 +11,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const { user, userProfile, loading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && !user && !userProfile) {
-      router.push('/login');
-    }
-  }, [user, userProfile, loading, router]);
+  // Removed automatic redirect to login for public access
 
   if (loading) {
     return (
@@ -64,9 +60,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user && !userProfile) {
-    return null; // Redirecting to login
-  }
+
 
   return (
     <div className="app-container">

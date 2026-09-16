@@ -32,6 +32,7 @@ import {
   Shield,
   Loader2,
   Printer,
+  MessageCircle,
 } from 'lucide-react';
 
 export default function PropertyDetailPage() {
@@ -278,19 +279,34 @@ export default function PropertyDetailPage() {
             </h2>
 
             {isViewer ? (
-              <div
-                style={{
-                  padding: '16px',
-                  background: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-md)',
-                  color: 'var(--text-muted)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}
-              >
-                <Shield size={18} />
-                بيانات التواصل محجوبة عن صلاحية المشاهد. مخصصة للمسؤولين والوكلاء فقط.
+              <div style={{ padding: '20px', background: 'var(--bg-surface)', borderRadius: 'var(--radius-md)' }}>
+                <h3 style={{ fontSize: '1.05rem', marginBottom: '16px', color: '#FFF' }}>للتواصل والاستفسار عن هذا العقار:</h3>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <a
+                    href={`https://wa.me/201122405205?text=${encodeURIComponent(`مرحباً، أريد الاستفسار عن العقار كود (${property.code})، هل ما زال متاحاً؟`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn"
+                    style={{ backgroundColor: '#25D366', color: 'white', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}
+                  >
+                    <MessageCircle size={18} />
+                    واتساب (01122405205)
+                  </a>
+                  <a
+                    href={`https://wa.me/201105715677?text=${encodeURIComponent(`مرحباً، أريد الاستفسار عن العقار كود (${property.code})، هل ما زال متاحاً؟`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn"
+                    style={{ backgroundColor: '#128C7E', color: 'white', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}
+                  >
+                    <MessageCircle size={18} />
+                    واتساب (01105715677)
+                  </a>
+                </div>
+                <div style={{ marginTop: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Shield size={16} />
+                  بيانات المالك الأصلية محجوبة، التواصل يتم عبر الإدارة فقط.
+                </div>
               </div>
             ) : (
               <div className="grid-3" style={{ gap: '18px' }}>

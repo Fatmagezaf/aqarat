@@ -21,35 +21,45 @@ import { UserRole } from '@/types/user';
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { userProfile, logout, isAdmin } = useAuth();
+  const { user, userProfile, logout, isAdmin } = useAuth();
 
-  const navItems = [
-    {
+  const navItems = [];
+  
+  if (user) {
+    navItems.push({
       title: 'لوحة التحكم',
       href: '/',
       icon: <LayoutDashboard size={20} />,
-    },
-    {
-      title: 'قاعدة العقارات',
-      href: '/properties',
-      icon: <Building2 size={20} />,
-    },
-    {
+    });
+  }
+
+  navItems.push({
+    title: 'قاعدة العقارات',
+    href: '/properties',
+    icon: <Building2 size={20} />,
+  });
+
+  if (user) {
+    navItems.push({
       title: 'إضافة عقار',
       href: '/properties/new',
       icon: <PlusCircle size={20} />,
-    },
-    {
-      title: 'خريطة العقارات',
-      href: '/map',
-      icon: <MapPin size={20} />,
-    },
-    {
+    });
+  }
+
+  navItems.push({
+    title: 'خريطة العقارات',
+    href: '/map',
+    icon: <MapPin size={20} />,
+  });
+
+  if (user) {
+    navItems.push({
       title: 'طلبات العملاء',
       href: '/client-requests',
       icon: <ClipboardList size={20} />,
-    },
-  ];
+    });
+  }
 
   if (isAdmin) {
     navItems.push({
@@ -138,60 +148,76 @@ export default function Sidebar() {
           gap: '12px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: 'var(--radius-full)',
-              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              color: '#FFF',
-            }}
-          >
-            {userProfile?.displayName ? userProfile.displayName.charAt(0) : 'U'}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: '0.875rem',
-                fontWeight: 700,
-                color: 'var(--text-primary)',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
+        {user ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: 'var(--radius-full)',
+                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  color: '#FFF',
+                }}
+              >
+                {userProfile?.displayName ? userProfile.displayName.charAt(0) : 'U'}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    color: 'var(--text-primary)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {userProfile?.displayName || 'المستخدم'}
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  {userProfile?.email || 'authenticated'}
+                </div>
+              </div>
+            </div>
+
+            {/* Role Badge */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span className={`badge ${roleTitle[currentRole].class}`}>
+                {roleTitle[currentRole].icon}
+                {roleTitle[currentRole].label}
+              </span>
+            </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={() => logout()}
+              className="btn btn-outline btn-sm"
+              style={{ width: '100%', justifyContent: 'center', color: 'var(--danger)' }}
             >
-              {userProfile?.displayName || 'المستخدم'}
+              <LogOut size={16} />
+              تسجيل الخروج
+            </button>
+          </>
+        ) : (
+          <>
+            <div style={{ textAlign: 'center', padding: '10px 0', color: 'var(--text-muted)' }}>
+              <span>تتصفح كزائر</span>
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              {userProfile?.email || 'authenticated'}
-            </div>
-          </div>
-        </div>
-
-        {/* Role Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span className={`badge ${roleTitle[currentRole].class}`}>
-            {roleTitle[currentRole].icon}
-            {roleTitle[currentRole].label}
-          </span>
-        </div>
-
-
-        {/* Logout Button */}
-        <button
-          onClick={() => logout()}
-          className="btn btn-outline btn-sm"
-          style={{ width: '100%', justifyContent: 'center', color: 'var(--danger)' }}
-        >
-          <LogOut size={16} />
-          تسجيل الخروج
-        </button>
+            <Link
+              href="/login"
+              className="btn btn-primary btn-sm"
+              style={{ width: '100%', justifyContent: 'center' }}
+            >
+              تسجيل الدخول للنظام
+            </Link>
+          </>
+        )}
       </div>
     </aside>
   );
