@@ -58,7 +58,7 @@ export async function getClientRequests(params: ClientRequestFilterParams = {}):
 }
 
 export async function createClientRequest(
-  inputData: Omit<ClientRequest, 'id' | 'createdAt' | 'updatedAt'>,
+  inputData: Omit<ClientRequest, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'createdByName'>,
   user: { uid: string; displayName: string }
 ): Promise<ClientRequest> {
   if (!isFirebaseConfigured || !db) {
