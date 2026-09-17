@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Building2, Lock, Mail, AlertCircle, ArrowLeft, Loader2, User } from 'lucide-react';
+import { Building2, Lock, Mail, AlertCircle, ArrowLeft, Loader2, User, ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,14 +13,20 @@ export default function LoginPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [secretCode, setSecretCode] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email || !password || (isSignUp && !name)) {
+    if (!email || !password || (isSignUp && (!name || !secretCode))) {
       setError('يرجى ملء جميع الحقول المطلوبة');
+      return;
+    }
+
+    if (isSignUp && secretCode !== 'Fatma2026') {
+      setError('كود تسجيل الشركة غير صحيح. لا يمكنك إنشاء حساب.');
       return;
     }
 
@@ -145,20 +151,38 @@ export default function LoginPage() {
         {/* Auth Form */}
         <form onSubmit={handleSubmit}>
           {isSignUp && (
-            <div className="form-group">
-              <label className="form-label">
-                <User size={16} />
-                الاسم الكامل
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="form-input"
-                placeholder="الاسم الكامل"
-                required
-              />
-            </div>
+            <>
+              <div className="form-group">
+                <label className="form-label">
+                  <User size={16} />
+                  الاسم الكامل
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="form-input"
+                  placeholder="الاسم الكامل"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">
+                  <ShieldCheck size={16} />
+                  كود تسجيل الشركة (سري)
+                </label>
+                <input
+                  type="password"
+                  value={secretCode}
+                  onChange={(e) => setSecretCode(e.target.value)}
+                  className="form-input"
+                  placeholder="أدخل الكود السري"
+                  dir="ltr"
+                  required
+                />
+              </div>
+            </>
           )}
 
           <div className="form-group">

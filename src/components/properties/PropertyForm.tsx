@@ -160,11 +160,8 @@ export default function PropertyForm({ initialData, isEdit = false }: PropertyFo
       const displayName = userProfile?.displayName || user?.email || 'USR';
       // Get first 3 letters, removing spaces and making uppercase
       const prefix = displayName.replace(/\s+/g, '').substring(0, 3).toUpperCase();
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let randomPart = '';
-      for (let i = 0; i < 5; i++) {
-        randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
+      // Generate a random number between 1000 and 99999
+      const randomPart = Math.floor(1000 + Math.random() * 90000).toString();
       setValue('code', `${prefix}-${randomPart}`);
     }
   }, [isEdit, initialData, setValue, userProfile, user]);
