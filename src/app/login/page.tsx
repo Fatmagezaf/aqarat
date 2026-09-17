@@ -25,7 +25,7 @@ export default function LoginPage() {
       return;
     }
 
-    if (isSignUp && secretCode !== 'Fatma2026') {
+    if (isSignUp && secretCode !== 'MFabk@151') {
       setError('كود تسجيل الشركة غير صحيح. لا يمكنك إنشاء حساب.');
       return;
     }
